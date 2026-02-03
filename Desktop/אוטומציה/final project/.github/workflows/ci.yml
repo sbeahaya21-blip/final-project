@@ -28,14 +28,15 @@ jobs:
       run: playwright install --with-deps
       continue-on-error: true  # Playwright might not be needed for API tests
     
-    - name: Run API tests (unittest.TestCase)
+    - name: Run API tests with coverage
       run: |
-        pytest tests/api/test_invoice_api_unittest.py -v --alluredir=allure-results || true
-      continue-on-error: true
-    
-    - name: Run API tests (with mocks)
-      run: |
-        pytest tests/api/test_invoice_api_with_mocks.py -v --alluredir=allure-results || true
+        pytest tests/api/ \
+          --cov=app \
+          --cov-report=xml \
+          --cov-report=html \
+          --cov-report=term \
+          --alluredir=allure-results \
+          -v || true
       continue-on-error: true
     
     - name: Run UI tests
@@ -43,17 +44,15 @@ jobs:
         pytest tests/ui/ -v --alluredir=allure-results || true
       continue-on-error: true  # UI tests might need server running
     
-    - name: Generate coverage report
-      run: |
-        pytest --cov=app --cov-report=xml --cov-report=html --cov-report=term || true
-      continue-on-error: true
-    
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
+        files: ./coverage.xml
+        flags: api_tests
+        name: codecov-api-tests
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
+        # Token is optional for public repositories
       continue-on-error: true
     
     - name: Upload Allure results

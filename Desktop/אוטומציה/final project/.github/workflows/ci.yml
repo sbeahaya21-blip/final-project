@@ -41,17 +41,18 @@ jobs:
       continue-on-error: true
     
     - name: Ensure coverage.xml exists
+      if: always()
       run: |
         if [ ! -f coverage.xml ]; then
           echo "Creating minimal coverage.xml"
-          cat > coverage.xml << 'EOF'
-<?xml version="1.0" ?>
-<coverage>
-  <sources>
-    <source>.</source>
-  </sources>
-</coverage>
-EOF
+          echo '<?xml version="1.0" ?>' > coverage.xml
+          echo '<coverage>' >> coverage.xml
+          echo '  <sources>' >> coverage.xml
+          echo '    <source>.</source>' >> coverage.xml
+          echo '  </sources>' >> coverage.xml
+          echo '</coverage>' >> coverage.xml
+        else
+          echo "✓ coverage.xml exists"
         fi
     
     - name: Upload coverage to Codecov

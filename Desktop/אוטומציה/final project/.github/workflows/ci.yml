@@ -32,6 +32,7 @@ jobs:
       run: |
         pytest tests/api/ \
           --cov=app \
+          --cov-branch \
           --cov-report=xml \
           --cov-report=html \
           --cov-report=term \
@@ -48,8 +49,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         files: ./coverage.xml
-        flags: api_tests
-        name: codecov-api-tests
+        flags: api_endpoints
+        name: codecov-api-endpoints
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
         # Token is optional for public repositories

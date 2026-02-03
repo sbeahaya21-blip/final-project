@@ -1,4 +1,4 @@
-﻿name: CI Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         TEST_EXIT=$?
         echo "Pytest exited with code: $TEST_EXIT"
         if [ $TEST_EXIT -ne 0 ]; then
-          echo "ג ן¸ Some tests failed, but continuing workflow..."
+          echo "Some tests failed, but continuing workflow..."
         fi
         exit 0
       continue-on-error: true
@@ -53,7 +53,7 @@ jobs:
           echo '  </sources>' >> coverage.xml
           echo '</coverage>' >> coverage.xml
         else
-          echo "ג“ coverage.xml exists"
+          echo "coverage.xml exists"
         fi
     
     - name: Upload coverage to Codecov
@@ -79,5 +79,5 @@ jobs:
     - name: Workflow completed successfully
       if: always()
       run: |
-        echo "ג… Workflow completed successfully"
+        echo "Workflow completed successfully"
         exit 0

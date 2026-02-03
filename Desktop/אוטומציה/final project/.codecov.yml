@@ -1,0 +1,55 @@
+# Codecov configuration file
+# This file configures how Codecov processes and displays coverage reports
+
+codecov:
+  require_ci_to_pass: false  # Don't fail CI if Codecov upload fails
+  notify:
+    wait_for_ci: true
+
+coverage:
+  precision: 2  # Show coverage to 2 decimal places
+  round: down   # Round down
+  range: "70...100"  # Coverage range (70% to 100%)
+
+  status:
+    project:
+      default:
+        target: 85%  # Target coverage is 85%
+        threshold: 1%  # Allow 1% threshold
+        base: auto  # Compare against previous commit
+        branches:
+          - main
+          - master
+          - develop
+    patch:
+      default:
+        target: 80%  # Patch coverage target
+        threshold: 1%
+
+comment:
+  layout: "reach, diff, flags, files, footer"
+  behavior: default
+  require_changes: false
+
+flags:
+  api_tests:
+    paths:
+      - app/views/
+      - app/controllers/
+      - app/services/
+      - app/models/
+    carryforward: true
+
+ignore:
+  - "tests/"
+  - "frontend/"
+  - "static/"
+  - "*.md"
+  - "*.bat"
+  - "*.sh"
+  - "*.yml"
+  - "*.yaml"
+  - ".github/"
+  - "htmlcov/"
+  - "allure-results/"
+  - "allure-report/"

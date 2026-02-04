@@ -73,9 +73,15 @@ function InvoiceDetail() {
       setError(null)
       const updatedInvoice = await invoiceApi.submitToERPNext(id)
       setInvoice(updatedInvoice)
+      // Reload invoice to get the latest state
+      await loadInvoice()
       alert(`Invoice submitted successfully to ERPNext!\nERPNext Invoice: ${updatedInvoice.erpnext_invoice_name || 'N/A'}`)
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to submit invoice to ERPNext')
+      console.error('Error submitting to ERPNext:', err)
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to submit invoice to ERPNext'
+      setError(errorMessage)
+      // Reload invoice to get current state even if submission failed
+      await loadInvoice()
     } finally {
       setSubmitting(false)
     }

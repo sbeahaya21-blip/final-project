@@ -25,7 +25,15 @@ function InvoiceList() {
       )
       setInvoices(data)
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to load invoices')
+      console.error('Error loading invoices:', err)
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to load invoices'
+      // If it's a 404, it might mean no invoices yet, so show empty state instead
+      if (err.response?.status === 404) {
+        setInvoices([])
+        setError(null)
+      } else {
+        setError(errorMessage)
+      }
     } finally {
       setLoading(false)
     }
@@ -67,7 +75,11 @@ function InvoiceList() {
       // Reload the list to show updated status
       await loadInvoices()
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || 'Failed to submit invoice to ERPNext')
+      console.error('Error submitting to ERPNext:', err)
+      const errorMessage = err.response?.data?.detail || err.message || 'Failed to submit invoice to ERPNext'
+      setError(errorMessage)
+      // Still reload the list even if there was an error, to show current state
+      await loadInvoices()
     } finally {
       setSubmittingId(null)
     }

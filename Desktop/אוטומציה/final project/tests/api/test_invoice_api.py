@@ -30,12 +30,13 @@ class TestInvoiceUpload:
         response = client.post("/api/invoices/create", json=invalid_data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
     
-    @patch('app.views.invoice_views.parser_service')
-    def test_upload_invoice_file_parsing_error(self, mock_parser, client):
+    @patch('app.views.invoice_views.invoice_controller')
+    def test_upload_invoice_file_parsing_error(self, mock_invoice_controller, client):
         """Test upload when parsing fails."""
         from app.exceptions import ParsingError
         
-        mock_parser.parse_invoice.side_effect = ParsingError("Parsing failed")
+        # Make upload_and_parse_invoice raise ParsingError
+        mock_invoice_controller.upload_and_parse_invoice.side_effect = ParsingError("Parsing failed")
         
         # Create a mock file
         files = {"file": ("test.pdf", b"fake content", "application/pdf")}

@@ -126,6 +126,11 @@ async def get_invoice(invoice_id: str):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
         )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve invoice: {str(e)}"
+        )
 
 
 @router.get("", response_model=List[Invoice])

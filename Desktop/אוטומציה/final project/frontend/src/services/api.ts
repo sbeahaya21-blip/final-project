@@ -101,8 +101,21 @@ export const invoiceApi = {
 
   // List all invoices
   listInvoices: async (): Promise<Invoice[]> => {
-    const response = await api.get<Invoice[]>('/invoices')
-    return response.data
+    try {
+      const response = await api.get<Invoice[]>('/invoices', {
+        timeout: 30000, // 30 second timeout
+      })
+      return response.data
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.message?.includes('Network Error')) {
+        throw new Error('Cannot connect to backend server. Please make sure the server is running at http://localhost:8000')
+      }
+      if (error.response?.status === 404) {
+        // Return empty array if 404 (no invoices yet)
+        return []
+      }
+      throw error
+    }
   },
 
   // Analyze invoice for anomalies
@@ -128,8 +141,20 @@ export const invoiceApi = {
 
   // Submit invoice to ERPNext
   submitToERPNext: async (id: string): Promise<Invoice> => {
-    const response = await api.post<Invoice>(`/invoices/${id}/submit-to-erpnext`)
-    return response.data
+    try {
+      const response = await api.post<Invoice>(`/invoices/${id}/submit-to-erpnext`, {}, {
+        timeout: 60000, // 60 second timeout
+      })
+      return response.data
+    } catch (error: any) {
+      if (error.code === 'ECONNREFUSED' || error.message?.includes('Network Error')) {
+        throw new Error('Cannot connect to backend server. Please make sure the server is running at http://localhost:8000')
+      }
+      if (error.response?.status === 404) {
+        throw new Error(`Invoice ${id} not found`)
+      }
+      throw error
+    }
   },
 }
 

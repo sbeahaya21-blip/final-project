@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+oci
+python-multipart
+pytest
+httpx
+pytest-cov
+pytest-html
+allure-pytest
+sqlalchemy
